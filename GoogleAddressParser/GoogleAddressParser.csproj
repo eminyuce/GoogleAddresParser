@@ -52,14 +52,17 @@
     <Compile Include="DB\DBDirectory.cs" />
     <Compile Include="Entities\GeocodeResponse.cs" />
     <Compile Include="Entities\GoogleLocation.cs" />
+    <Compile Include="Entities\MaritimeDatabaseCom.cs" />
     <Compile Include="Entities\UnFormattedAddress.cs" />
     <Compile Include="Entities\UnformattedAddressShiporacleCom.cs" />
     <Compile Include="Helpers\Convert.cs" />
     <Compile Include="Helpers\DataTableHelper.cs" />
     <Compile Include="Helpers\GoogleGeoApiHelper.cs" />
+    <Compile Include="Helpers\HttpHelper.cs" />
     <Compile Include="Helpers\LocationParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\MaritimeDatabaseComRepository.cs" />
     <Compile Include="Repositories\UnFormattedAddressRepository.cs" />
     <Compile Include="Repositories\UnformattedAddressShiporacleComRepository.cs" />
   </ItemGroup>

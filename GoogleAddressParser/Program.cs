@@ -28,10 +28,16 @@ namespace GoogleAddressParser
             //Console.WriteLine(googleXmlApi);
 
             //Console.ReadKey();
+            // NewMethod();
+            MaritimeDatabaseComRepository.ParseAddress();
+        }
+
+        private static void NewMethod()
+        {
             var p = UnFormattedAddressRepository.GetUnFormattedAddresss();
             foreach (var item in p)
             {
-                var geoLocation = LocationParser.ParseGoogleApiXmlResult(item.GoogleApiXml,false);
+                var geoLocation = LocationParser.ParseGoogleApiXmlResult(item.GoogleApiXml, false);
                 if (!String.IsNullOrEmpty(geoLocation.streetNumber) || !String.IsNullOrEmpty(geoLocation.premise))
                 {
                     // Console.WriteLine(geoLocation.formatted_address);
@@ -47,7 +53,6 @@ namespace GoogleAddressParser
 
                 UnFormattedAddressRepository.SaveOrUpdateUnFormattedAddress(item);
             }
-
         }
 
         private static void SaveUnformattedAddressShiporacleComs()

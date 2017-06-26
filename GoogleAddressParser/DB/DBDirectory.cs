@@ -265,6 +265,126 @@ namespace GoogleAddressParser.DB
         }
 
 
+        public static int SaveOrUpdateMaritimeDatabaseCom(MaritimeDatabaseCom item)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings[ConnectionStringKey].ConnectionString;
+            String commandText = @"SaveOrUpdateMaritimeDatabaseCom";
+            var parameterList = new List<SqlParameter>();
+            var commandType = CommandType.StoredProcedure;
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Id", item.Id.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Company", item.Company.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Activity", item.Activity.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Country", item.Country.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Address", item.Address.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Town", item.Town.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("State", item.State.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Zipcode", item.Zipcode.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Phone", item.Phone.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Fax", item.Fax.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Website", item.Website.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("AOHPhone", item.AOHPhone.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("GAddress", item.GAddress.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("GCity", item.GCity.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("GState", item.GState.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("GCountry", item.GCountry.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("GZip", item.GZip.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("GoogleApiXml", item.GoogleApiXml.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Latitude", item.Latitude, SqlDbType.Float));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Longitude", item.Longitude, SqlDbType.Float));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("StreetNumber", item.StreetNumber.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Premise", item.Premise.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Subpremise", item.Subpremise.ToStr(), SqlDbType.NVarChar));
+            parameterList.Add(DatabaseUtility.GetSqlParameter("IsDeliveredAddress", item.IsDeliveredAddress, SqlDbType.Bit));
+
+
+
+            int id = DatabaseUtility.ExecuteScalar(new SqlConnection(connectionString), commandText, commandType, parameterList.ToArray()).ToInt();
+            return id;
+        }
+
+        public static MaritimeDatabaseCom GetMaritimeDatabaseCom(int id)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings[ConnectionStringKey].ConnectionString;
+            String commandText = @"SELECT * FROM MaritimeDatabaseCom WHERE id=@id";
+            var parameterList = new List<SqlParameter>();
+            var commandType = CommandType.Text;
+            parameterList.Add(DatabaseUtility.GetSqlParameter("id", id, SqlDbType.Int));
+            DataSet dataSet = DatabaseUtility.ExecuteDataSet(new SqlConnection(connectionString), commandText, commandType, parameterList.ToArray());
+            if (dataSet.Tables.Count > 0)
+            {
+                using (DataTable dt = dataSet.Tables[0])
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        var e = GetMaritimeDatabaseComFromDataRow(dr);
+                        return e;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static List<MaritimeDatabaseCom> GetMaritimeDatabaseComs()
+        {
+            var list = new List<MaritimeDatabaseCom>();
+            String commandText = @"marine_GetMaritimeDatabaseCom";
+            var parameterList = new List<SqlParameter>();
+            string connectionString = ConfigurationManager.ConnectionStrings[ConnectionStringKey].ConnectionString;
+            var commandType = CommandType.StoredProcedure;
+            DataSet dataSet = DatabaseUtility.ExecuteDataSet(new SqlConnection(connectionString), commandText, commandType, parameterList.ToArray());
+            if (dataSet.Tables.Count > 0)
+            {
+                using (DataTable dt = dataSet.Tables[0])
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        var e = GetMaritimeDatabaseComFromDataRow(dr);
+                        list.Add(e);
+                    }
+                }
+            }
+            return list;
+        }
+        public static void DeleteMaritimeDatabaseCom(int id)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings[ConnectionStringKey].ConnectionString;
+            String commandText = @"DELETE FROM MaritimeDatabaseCom WHERE Id=@Id";
+            var parameterList = new List<SqlParameter>();
+            var commandType = CommandType.Text;
+            parameterList.Add(DatabaseUtility.GetSqlParameter("Id", id, SqlDbType.Int));
+            DatabaseUtility.ExecuteNonQuery(new SqlConnection(connectionString), commandText, commandType, parameterList.ToArray());
+        }
+
+        private static MaritimeDatabaseCom GetMaritimeDatabaseComFromDataRow(DataRow dr)
+        {
+            var item = new MaritimeDatabaseCom();
+
+            item.Id = dr["Id"].ToStr();
+            item.Company = dr["Company"].ToStr();
+            item.Activity = dr["Activity"].ToStr();
+            item.Country = dr["Country"].ToStr();
+            item.Address = dr["Address"].ToStr();
+            item.Town = dr["Town"].ToStr();
+            item.State = dr["State"].ToStr();
+            item.Zipcode = dr["Zipcode"].ToStr();
+            item.Phone = dr["Phone"].ToStr();
+            item.Fax = dr["Fax"].ToStr();
+            item.Website = dr["Website"].ToStr();
+            item.AOHPhone = dr["AOHPhone"].ToStr();
+            item.GAddress = dr["GAddress"].ToStr();
+            item.GCity = dr["GCity"].ToStr();
+            item.GState = dr["GState"].ToStr();
+            item.GCountry = dr["GCountry"].ToStr();
+            item.GZip = dr["GZip"].ToStr();
+            item.GoogleApiXml = dr["GoogleApiXml"].ToStr();
+            item.Latitude = dr["Latitude"].ToFloat();
+            item.Longitude = dr["Longitude"].ToFloat();
+            item.StreetNumber = dr["StreetNumber"].ToStr();
+            item.Premise = dr["Premise"].ToStr();
+            item.Subpremise = dr["Subpremise"].ToStr();
+            return item;
+        }
+
 
     }
 }

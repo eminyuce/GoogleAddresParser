@@ -3,6 +3,7 @@ using GoogleAddressParser.Repositories;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -17,10 +18,18 @@ namespace GoogleAddressParser.Helpers
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         public static XDocument GetAddressResponseFromApi(string address, String proxyIp = "201.47.57.178", int port = 3128)
         {
-            var requestUri = string.Format("http://maps.googleapis.com/maps/api/xml?address={0}&sensor=false",
-                                           Uri.EscapeDataString(address));
+            //https://developers.google.com/maps/documentation/geocoding/start
+            //https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=
+            string key = "";
+            var requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?address={0}&key={1}",
+                                           Uri.EscapeDataString(address), key);
 
-            var request = WebRequest.Create(requestUri);
+            // var requestUri = string.Format("http://maps.googleapis.com/maps/api/xml?address={0}&sensor=false",Uri.EscapeDataString(address));
+
+            // var request = WebRequest.Create(requestUri);
+            string requestString = "";
+            string responseString = HttpHelper.GetWebRequest(requestUri, requestString, "GET", System.Text.Encoding.UTF8);
+
             if (!String.IsNullOrEmpty(proxyIp))
             {
                 WebProxy proxyObject = new WebProxy(proxyIp, port);
@@ -28,10 +37,11 @@ namespace GoogleAddressParser.Helpers
                 //proxyObject.BypassProxyOnLocal = true;
                 //// HTTP requests use this proxy information.
                 GlobalProxySelection.Select = proxyObject;
-                request.Proxy = proxyObject;
+               // request.Proxy = proxyObject;
             }
-            var response = request.GetResponse();
-            var xdoc = XDocument.Load(response.GetResponseStream());
+            //  var response = request.GetResponse();
+            // var xdoc = XDocument.Load(response.GetResponseStream());
+            var xdoc = XDocument.Load(new StringReader(responseString));
             if (xdoc == null)
                 throw new Exception("Xml is not found");
             var result = xdoc.Element("GeocodeResponse").Element("status");

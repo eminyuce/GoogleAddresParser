@@ -17,7 +17,9 @@ namespace GoogleAddressParser.Helpers
         public static GoogleLocation GetParseLocation(string address, String ip, int port, Boolean isLatitudeOnly = false)
         {
             address = Regex.Replace(address, @"\r\n?|\n", ", ");
-
+            address = address.Replace("\n", String.Empty);
+            address = address.Replace("\r", String.Empty);
+            address = address.Replace("\t", String.Empty);
             XDocument xdoc = GoogleGeoApiHelper.GetAddressResponseFromApi(address, ip, port);
             _logger.Debug(String.Format("Address={0} IP={1} PORT={2} API={3}", address, ip, port, xdoc.ToStr()));
             GoogleLocation loc = ParseGoogleApiXmlResult(xdoc, isLatitudeOnly);
